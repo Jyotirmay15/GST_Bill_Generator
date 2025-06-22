@@ -52,10 +52,10 @@ const TaxCalculationTable: React.FC<TaxCalculationTableProps> = ({ billData }) =
                 Taxable Amount
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', textAlign: 'center', border: '1px solid #ddd' }}>
-                CGST (9%)
+                CGST
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', textAlign: 'center', border: '1px solid #ddd' }}>
-                SGST (9%)
+                SGST
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', textAlign: 'center', border: '1px solid #ddd' }}>
                 Total Amount
@@ -64,8 +64,8 @@ const TaxCalculationTable: React.FC<TaxCalculationTableProps> = ({ billData }) =
           </TableHead>
           <TableBody>
             {billData.items.map((item, index) => {
-              const cgstAmount = item.amount * 0.09;
-              const sgstAmount = item.amount * 0.09;
+              const cgstAmount = item.amount * item.cgst / 100;
+              const sgstAmount = item.amount * item.sgst / 100;
               const totalWithTax = item.amount + cgstAmount + sgstAmount;
               
               return (

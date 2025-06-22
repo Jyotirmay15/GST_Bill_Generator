@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, MenuItem, Typography, InputAdornment } from "@mui/material";
+import { TextField, Button, Box, MenuItem, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { BillItem } from "../types/bill.types";
 
@@ -7,7 +7,7 @@ interface ItemFormProps {
   onAddItem: (item: Omit<BillItem, "id">) => void;
 }
 
-const units = ["Kg", "Ltr", "Mtr", "Sqft", "Bag", "Set", "Pair"];
+const units = ["Kg", "Ton", "Ltr", "Mtr", "Sqft", "Bag", "Set", "Pair"];
 
 const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
   const [formData, setFormData] = useState({
@@ -18,23 +18,34 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
     rateWithoutTax: 0,
     rateWithTax: 0,
     amount: 0,
+    sgst: "",
+    cgst: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const getTotalTaxRate = () =>
+    Number(formData.sgst || 0) + Number(formData.cgst || 0);
+
   const handleChange = (field: string, value: string | number) => {
     const newFormData = { ...formData, [field]: value };
 
-    // Auto-calculate rates and amounts
-    if (field === "rateWithoutTax") {
-      const rateWithoutTax = Number(value);
-      const rateWithTax = rateWithoutTax * 1.18; // Adding 18% tax
+    const taxRate =
+      (Number(newFormData.sgst || 0) + Number(newFormData.cgst || 0)) / 100;
+
+    if (
+      field === "rateWithoutTax" ||
+      field === "sgst" ||
+      field === "cgst"
+    ) {
+      const rateWithoutTax = Number(newFormData.rateWithoutTax);
+      const rateWithTax = rateWithoutTax * (1 + taxRate);
       const amount = newFormData.quantity * rateWithoutTax;
       newFormData.rateWithTax = rateWithTax;
       newFormData.amount = amount;
     } else if (field === "rateWithTax") {
       const rateWithTax = Number(value);
-      const rateWithoutTax = rateWithTax / 1.18; // Removing 18% tax
+      const rateWithoutTax = rateWithTax / (1 + taxRate);
       const amount = newFormData.quantity * rateWithoutTax;
       newFormData.rateWithoutTax = rateWithoutTax;
       newFormData.amount = amount;
@@ -65,6 +76,12 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
     if (formData.rateWithoutTax <= 0) {
       newErrors.rateWithoutTax = "Rate must be greater than 0";
     }
+    if (formData.sgst === "" || isNaN(Number(formData.sgst))) {
+      newErrors.sgst = "SGST is required";
+    }
+    if (formData.cgst === "" || isNaN(Number(formData.cgst))) {
+      newErrors.cgst = "CGST is required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -81,6 +98,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
         rate: formData.rateWithoutTax,
         rateWithTax: formData.rateWithTax,
         amount: formData.amount,
+        sgst: Number(formData.sgst),
+        cgst: Number(formData.cgst),
       });
 
       // Reset form
@@ -92,6 +111,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
         rateWithoutTax: 0,
         rateWithTax: 0,
         amount: 0,
+        sgst: "",
+        cgst: "",
       });
     }
   };
@@ -169,6 +190,30 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
         <TextField
           fullWidth
           size="small"
+          label="SGST (%)"
+          type="number"
+          value={formData.sgst}
+          onChange={(e) => handleChange("sgst", e.target.value)}
+          required
+          error={!!errors.sgst}
+          helperText={errors.sgst}
+        />
+
+        <TextField
+          fullWidth
+          size="small"
+          label="CGST (%)"
+          type="number"
+          value={formData.cgst}
+          onChange={(e) => handleChange("cgst", e.target.value)}
+          required
+          error={!!errors.cgst}
+          helperText={errors.cgst}
+        />
+
+        <TextField
+          fullWidth
+          size="small"
           label="Rate (Without Tax) ₹"
           type="number"
           value={formData.rateWithoutTax}
@@ -188,7 +233,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ onAddItem }) => {
           onChange={(e) =>
             handleChange("rateWithTax", parseFloat(e.target.value) || 0)
           }
-          helperText="Auto-calculated (18% tax included)"
+          helperText="Auto-calculated (SGST + CGST included)"
         />
 
         <TextField

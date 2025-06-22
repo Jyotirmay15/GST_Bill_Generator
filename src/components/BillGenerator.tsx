@@ -1,11 +1,9 @@
 import React, { useState, useRef } from "react";
 import {
-  Container,
   Paper,
   Typography,
   Box,
   Button,
-  Grid,
   AppBar,
   Toolbar,
   IconButton,
@@ -16,6 +14,7 @@ import BillHeader from "./BillHeader";
 import BuyerDetails from "./BuyerDetails";
 import BuyerForm from "./BuyerForm";
 import ItemForm from "./ItemForm";
+import Note from "./Note";
 import ItemsTable from "./ItemsTable";
 import BillSummary from "./BillSummary";
 import TaxCalculationTable from "./TaxCalculationTable";
@@ -42,18 +41,22 @@ const BillGenerator: React.FC = () => {
     subtotal: 0,
     cgst: 0,
     sgst: 0,
-    igst: 0,
     total: 0,
   });
 
   const calculateTotals = (items: BillItem[]) => {
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-    const cgst = subtotal * 0.09; // 9% CGST
-    const sgst = subtotal * 0.09; // 9% SGST
-    const igst = 0; // For intrastate, IGST is 0
-    const total = subtotal + cgst + sgst + igst;
+    const cgst = items.reduce(
+      (sum, items) => sum + (items.amount * items.cgst) / 100,
+      0
+    );
+    const sgst = items.reduce(
+      (sum, items) => sum + (items.amount * items.sgst) / 100,
+      0
+    );
+    const total = subtotal + cgst + sgst;
 
-    return { subtotal, cgst, sgst, igst, total };
+    return { subtotal, cgst, sgst, total };
   };
 
   const handleBuyerChange = (buyer: BuyerDetailsType) => {
@@ -192,9 +195,25 @@ const BillGenerator: React.FC = () => {
               font-weight: bold;
               margin-top: 8px;
             }
+
+            subtitle2 {
+              font-size: 1rem;
+            }
             
             .section {
               margin-bottom: 12px;
+            }
+
+            .bill-summary-footer {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              margin-top: 24px;
+            }
+
+            .specificSection {
+              display: flex;
+              justify-content: space-between;
             }
 
             .invoice-details {
@@ -214,15 +233,38 @@ const BillGenerator: React.FC = () => {
               border-radius: 4px;
               background-color: #f9f9f9;
             }
+
+            .authorised-signatory {
+              margin-top: 30px;
+              margin-left: 100px;
+            }
+
+            .declaration {
+              width: 300px;
+            }
+
+            .amount-in-words {
+            font-weight: bold;
+            }
             
             .section-title {
               font-size: 12px;
               color: #2196F3;
               font-weight: bold;
-              margin-bottom: 8px;
+              margin-bottom: 2px;
               padding-bottom: 4px;
             }
             
+            .subtitle2 {
+              font-size: 12px;
+              color: #2196F3;
+              font-weight: bold;
+            }
+            
+            .bill-summary-table {
+              width: 310px;
+            }
+
             @media print {
               body { margin: 0; }
               .print-container { margin: 0; padding: 15px; }
@@ -249,6 +291,7 @@ const BillGenerator: React.FC = () => {
   };
 
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [savedNote, setSavedNote] = useState<string | undefined>(undefined);
 
   return (
     <div style={{ backgroundColor: "#f5f5f5" }}>
@@ -295,6 +338,7 @@ const BillGenerator: React.FC = () => {
                 onBuyerChange={handleBuyerChange}
               />
               <ItemForm onAddItem={handleAddItem} />
+              <Note setSavedNote={setSavedNote} />
             </Paper>
             <div>
               <BuyerDetails buyer={billData.buyer} />
@@ -303,6 +347,43 @@ const BillGenerator: React.FC = () => {
                 onEditItem={handleEditItem}
                 onDeleteItem={handleDeleteItem}
               />
+              <Box className="section" sx={{ mb: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 2,
+                    color: "#2196F3",
+                    fontWeight: "bold",
+                    borderBottom: "1px solid #ddd",
+                    pb: 1,
+                  }}
+                  className="invoice-title"
+                >
+                  Note
+                </Typography>
+                <Box>
+                  <Box
+                    sx={{
+                      p: 2,
+                      border: "1px dashed #ddd",
+                      borderRadius: 1,
+                      mb: 3,
+                    }}
+                  >
+                    {(savedNote === "" || savedNote === undefined) && (
+                      <Typography variant="body1" color="text.secondary">
+                        No note added yet. Use the form on the left to add a
+                        note
+                      </Typography>
+                    )}
+                    {savedNote && (
+                      <Typography sx={{ color: "#333" }}>
+                        {savedNote}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              </Box>
             </div>
           </div>
         </div>
@@ -344,7 +425,44 @@ const BillGenerator: React.FC = () => {
             <BillHeader billData={billData} />
             <BuyerDetails buyer={billData.buyer} />
             <TaxCalculationTable billData={billData} />
-            <BillSummary billData={billData} />
+            <BillSummary billData={billData} savedNote={savedNote} />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mt: 6,
+                fontSize: "13px",
+              }}
+              className="bill-summary-footer"
+            >
+              <Box sx={{ maxWidth: 350 }} className="declaration">
+                <Typography
+                  className="subtitle2"
+                  sx={{ fontWeight: "bold", mb: 0.5, color: "#2196F3" }}
+                >
+                  Declaration
+                </Typography>
+                <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                  We declare that this invoice shows the actual price of{"\n"}
+                  the goods described and that all particulars are true{"\n"}
+                  and correct.
+                </Typography>
+              </Box>
+              {/* Authorised Signatory on bottom right */}
+              <Box sx={{ textAlign: "right", minWidth: 250 }}>
+                <Typography
+                  className="subtitle2"
+                  sx={{ fontWeight: "bold", mb: 0.5 }}
+                >
+                  for KAMAL PRAKASH ENTERPRISES
+                </Typography>
+                <Box sx={{ mt: 6 }} className="authorised-signatory">
+                  <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                    Authorised Signatory
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           </div>
         </Box>
       </Dialog>

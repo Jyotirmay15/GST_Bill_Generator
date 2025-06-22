@@ -210,7 +210,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
                     border: "1px solid #ddd",
                   }}
                 >
-                  Amount
+                  Amount (with tax)
                 </TableCell>
                 <TableCell
                   sx={{
@@ -258,8 +258,9 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
                   <TableCell
                     sx={{ textAlign: "right", border: "1px solid #ddd" }}
                   >
-                    ₹{item.amount.toFixed(2)}
+                    ₹{item.rateWithTax?.toFixed(2)}
                   </TableCell>
+
                   <TableCell
                     sx={{ textAlign: "center", border: "1px solid #ddd" }}
                     className="no-print"

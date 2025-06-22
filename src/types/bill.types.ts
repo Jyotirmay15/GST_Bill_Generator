@@ -6,8 +6,11 @@ export interface BillItem {
   unit: string;
   rate: number;
   rateWithTax?: number;
+  sgst: number;
+  cgst: number;
   amount: number;
 }
+
 
 export interface BuyerDetails {
   name: string;
@@ -25,6 +28,5 @@ export interface BillData {
   subtotal: number;
   cgst: number;
   sgst: number;
-  igst: number;
   total: number;
 }

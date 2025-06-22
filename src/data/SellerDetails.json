@@ -5,5 +5,12 @@
   "gstin": "23AYPPS0474B1ZH",
   "phone": "+91-XXXXXXXXXX",
   "email": "info@kamalprakash.com",
-  "placeOfSupply": "Madhya Pradesh"
+  "placeOfSupply": "Madhya Pradesh",
+  "BankDetails": {
+    "name": "KAMAL PRAKASH ENTERPRISES",
+    "bankName": "Punjab National Bank",
+    "branch": "IHM, GWALIOR",
+    "accountNumber": "12691131000530",
+    "IFSC": "PUNB0126910"
+  }
 }
