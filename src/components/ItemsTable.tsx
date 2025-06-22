@@ -165,7 +165,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
                     border: "1px solid #ddd",
                   }}
                 >
-                  Description
+                  Items
                 </TableCell>
                 <TableCell
                   sx={{
@@ -301,7 +301,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Description"
+                  label="Item"
                   value={editFormData.description}
                   onChange={(e) =>
                     handleEditChange("description", e.target.value)

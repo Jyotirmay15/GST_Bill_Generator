@@ -331,8 +331,22 @@ const BillGenerator: React.FC = () => {
         </Box>
 
         <div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "20px" }}>
-            <Paper style={{ width: "50%", padding: "20px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "20px",
+              flexWrap: "wrap",
+            }}
+          >
+            <Paper
+              style={{
+                padding: "20px",
+                flex: 1,
+                maxWidth: "800px",
+                minWidth: "300px",
+              }}
+            >
               <BuyerForm
                 buyer={billData.buyer}
                 onBuyerChange={handleBuyerChange}
@@ -423,7 +437,6 @@ const BillGenerator: React.FC = () => {
         <Box sx={{ p: { xs: 1, sm: 4 } }}>
           <div ref={printRef}>
             <BillHeader billData={billData} />
-            <BuyerDetails buyer={billData.buyer} />
             <TaxCalculationTable billData={billData} />
             <BillSummary billData={billData} savedNote={savedNote} />
             <Box

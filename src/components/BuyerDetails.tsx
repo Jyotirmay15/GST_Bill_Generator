@@ -15,7 +15,6 @@ const BuyerDetails: React.FC<BuyerDetailsProps> = ({ buyer }) => {
           mb: 2,
           color: "#2196F3",
           fontWeight: "bold",
-          borderBottom: "1px solid #ddd",
           pb: 1,
         }}
         className="invoice-title"
