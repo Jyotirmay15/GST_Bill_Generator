@@ -94,7 +94,10 @@ const BillSummary: React.FC<BillSummaryProps> = ({ billData, savedNote }) => {
 
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}  className="specificSection">
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
+        className="specificSection"
+      >
         <div>
           {savedNote != undefined && savedNote.trim() !== "" && (
             <>
@@ -119,15 +122,46 @@ const BillSummary: React.FC<BillSummaryProps> = ({ billData, savedNote }) => {
               Bank Details
             </Typography>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span>Account Name: {SellerDetails.BankDetails.name}</span>
-              <span>Bank Name: {SellerDetails.BankDetails.bankName}</span>
-              <span>Branch: {SellerDetails.BankDetails.branch}</span>
-              <span>IFSC Code: {SellerDetails.BankDetails.IFSC}</span>
-              <span>Account Number: {SellerDetails.BankDetails.accountNumber}</span>  
+              <Typography variant="body2">
+                Account Name: {SellerDetails.BankDetails.name}
+              </Typography>
+              <Typography variant="body2">
+                Bank Name: {SellerDetails.BankDetails.bankName}
+              </Typography>
+              <Typography variant="body2">
+                Branch: {SellerDetails.BankDetails.branch}
+              </Typography>
+              <Typography variant="body2">
+                IFSC Code: {SellerDetails.BankDetails.IFSC}
+              </Typography>
+              <Typography variant="body2">
+                Account Number 1: {SellerDetails.BankDetails.accountNumber1}
+              </Typography>
+              <Typography variant="body2">
+                Account Number 2: {SellerDetails.BankDetails.accountNumber2}
+              </Typography>
             </div>
           </>
+          <>
+            {" "}
+            <Typography
+              variant="h6"
+              className="section-title"
+              sx={{ fontWeight: "bold", mb: 0.5, color: "#2196F3" }}
+            >
+              Declaration
+            </Typography>
+            <Typography variant="body2" sx={{ whiteSpace: "pre-line" }} className="declaration-text">
+              {`We declare that this invoice shows the actual price of
+the goods described and that all particulars are true
+and correct.`}
+            </Typography>
+          </>
         </div>
-        <Box sx={{ width: { xs: "100%", md: "500px" } }} className="bill-summary-table">
+        <Box
+          sx={{ width: { xs: "100%", md: "500px" } }}
+          className="bill-summary-table"
+        >
           <Typography
             variant="h6"
             sx={{ color: "#2196F3", fontWeight: "bold" }}
@@ -210,7 +244,11 @@ const BillSummary: React.FC<BillSummaryProps> = ({ billData, savedNote }) => {
               </TableRow>
             </TableBody>
           </Table>
-          <Typography variant="body2" sx={{ mt: 2, fontSize: "16px", fontWeight: "bold" }} className="amount-in-words">
+          <Typography
+            variant="body2"
+            sx={{ mt: 2, fontSize: "16px", fontWeight: "bold" }}
+            className="amount-in-words"
+          >
             Amount in Words: {numberToWords(billData.total)}
           </Typography>
         </Box>

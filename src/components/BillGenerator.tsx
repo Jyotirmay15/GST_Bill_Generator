@@ -254,6 +254,10 @@ const BillGenerator: React.FC = () => {
               margin-bottom: 2px;
               padding-bottom: 4px;
             }
+
+            .declaration-text {
+            white-space: pre-line;
+            }
             
             .subtitle2 {
               font-size: 12px;
@@ -453,13 +457,43 @@ const BillGenerator: React.FC = () => {
                   className="subtitle2"
                   sx={{ fontWeight: "bold", mb: 0.5, color: "#2196F3" }}
                 >
-                  Declaration
+                  Terms & Conditions
                 </Typography>
-                <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
-                  We declare that this invoice shows the actual price of{"\n"}
-                  the goods described and that all particulars are true{"\n"}
-                  and correct.
-                </Typography>
+                <ol
+                  style={{
+                    listStyleType: "decimal",
+                    paddingLeft: 12,
+                    marginBottom: 0,
+                  }}
+                >
+                  <li>
+                    <Typography variant="body2" component="span">
+                      Our responsibility ceases for shortage, loss, damage or
+                      delay after delivery to carrier.
+                    </Typography>
+                  </li>
+                  <li>
+                    <Typography variant="body2" component="span">
+                      All claims should be made by buyer directly with concerned
+                      carrier
+                    </Typography>
+                  </li>
+                  <li>
+                    <Typography variant="body2" component="span">
+                      Goods once sold are not Exchangeable/Returnable.
+                    </Typography>
+                  </li>
+                  <li>
+                    <Typography variant="body2" component="span">
+                      Subject to Gwalior Jurisdiction.
+                    </Typography>
+                  </li>
+                  <li>
+                    <Typography variant="body2" component="span">
+                      E.&.O.E
+                    </Typography>
+                  </li>
+                </ol>
               </Box>
               {/* Authorised Signatory on bottom right */}
               <Box sx={{ textAlign: "right", minWidth: 250 }}>
